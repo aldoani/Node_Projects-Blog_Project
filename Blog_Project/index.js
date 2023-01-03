@@ -14,6 +14,23 @@ const connect = async () => {
 };
 app.use(express.json());
 app.use("/blog", blogrout);
+
+app.use((err, req, res, next) => {
+  const errorStates = err.status || 500;
+  const errorMeassage = err.message || "Something went wrong";
+
+  res.status(errorStates).json({
+    success: false,
+    status: errorStates,
+    message: errorMeassage,
+    stack: err.stack,
+  });
+  next();
+});
+app.use((req, res) => {
+  res.json("Bad Requset Page");
+});
+
 app.listen(3000, async () => {
   await connect();
   console.log("listining");
